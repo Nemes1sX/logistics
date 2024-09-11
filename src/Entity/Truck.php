@@ -22,11 +22,12 @@ class Truck
     #[ORM\Column(length: 255)]
     private ?string $license_plate = null;
 
-    #[ORM\OneToOne(mappedBy: 'truck', cascade: ['persist', 'remove'])]
-    private ?FleetSet $fleetSet = null;
-
     #[ORM\Column(length: 8)]
     private ?string $status = null;
+
+    #[ORM\OneToOne(inversedBy: 'truck', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FleetSet $fleet_set = null;
 
     public function getId(): ?int
     {
@@ -69,23 +70,6 @@ class Truck
         return $this;
     }
 
-    public function getFleetSet(): ?FleetSet
-    {
-        return $this->fleetSet;
-    }
-
-    public function setFleetSet(FleetSet $fleetSet): static
-    {
-        // set the owning side of the relation if necessary
-        if ($fleetSet->getTruck() !== $this) {
-            $fleetSet->setTruck($this);
-        }
-
-        $this->fleetSet = $fleetSet;
-
-        return $this;
-    }
-
     public function getStatus(): ?string
     {
         return $this->status;
@@ -94,6 +78,18 @@ class Truck
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getFleetSet(): ?FleetSet
+    {
+        return $this->fleet_set;
+    }
+
+    public function setFleetSet(FleetSet $fleet_set): static
+    {
+        $this->fleet_set = $fleet_set;
 
         return $this;
     }

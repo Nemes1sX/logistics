@@ -24,13 +24,11 @@ class FleetSet
     #[ORM\OneToMany(targetEntity: Driver::class, mappedBy: 'fleetSet')]
     private Collection $drivers;
 
-    #[ORM\OneToOne(inversedBy: 'fleetSet', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Truck $truck = null;
-
-    #[ORM\OneToOne(inversedBy: 'fleetSet', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\OneToOne(mappedBy: 'fleet_set', cascade: ['persist', 'remove'])]
     private ?Trailer $trailer = null;
+
+    #[ORM\OneToOne(mappedBy: 'fleet_set', cascade: ['persist', 'remove'])]
+    private ?Truck $truck = null;
 
     public function __construct()
     {
@@ -84,27 +82,37 @@ class FleetSet
         return $this;
     }
 
-    public function getTruck(): ?Truck
-    {
-        return $this->truck;
-    }
+   public function getTrailer(): ?Trailer
+   {
+       return $this->trailer;
+   }
 
-    public function setTruck(Truck $truck): static
-    {
-        $this->truck = $truck;
+   public function setTrailer(Trailer $trailer): static
+   {
+       // set the owning side of the relation if necessary
+       if ($trailer->getFleetSet() !== $this) {
+           $trailer->setFleetSet($this);
+       }
 
-        return $this;
-    }
+       $this->trailer = $trailer;
 
-    public function getTrailer(): ?Trailer
-    {
-        return $this->trailer;
-    }
+       return $this;
+   }
 
-    public function setTrailer(Trailer $trailer): static
-    {
-        $this->trailer = $trailer;
+   public function getTruck2(): ?Truck
+   {
+       return $this->truck;
+   }
 
-        return $this;
-    }
+   public function setTruck2(Truck $truck): static
+   {
+       // set the owning side of the relation if necessary
+       if ($truck->getFleetSet() !== $this) {
+           $truck->setFleetSet($this);
+       }
+
+       $this->truck = $truck;
+
+       return $this;
+   }
 }

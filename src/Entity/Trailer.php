@@ -16,11 +16,12 @@ class Trailer
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToOne(mappedBy: 'trailer', cascade: ['persist', 'remove'])]
-    private ?FleetSet $fleetSet = null;
-
     #[ORM\Column(length: 8)]
     private ?string $status = null;
+
+    #[ORM\OneToOne(inversedBy: 'trailer', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FleetSet $fleet_set = null;
 
     public function getId(): ?int
     {
@@ -39,23 +40,6 @@ class Trailer
         return $this;
     }
 
-    public function getFleetSet(): ?FleetSet
-    {
-        return $this->fleetSet;
-    }
-
-    public function setFleetSet(FleetSet $fleetSet): static
-    {
-        // set the owning side of the relation if necessary
-        if ($fleetSet->getTrailer() !== $this) {
-            $fleetSet->setTrailer($this);
-        }
-
-        $this->fleetSet = $fleetSet;
-
-        return $this;
-    }
-
     public function getStatus(): ?string
     {
         return $this->status;
@@ -64,6 +48,18 @@ class Trailer
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getFleetSet(): ?FleetSet
+    {
+        return $this->fleet_set;
+    }
+
+    public function setFleetSet(FleetSet $fleet_set): static
+    {
+        $this->fleet_set = $fleet_set;
 
         return $this;
     }
