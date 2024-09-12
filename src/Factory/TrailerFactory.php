@@ -38,7 +38,7 @@ final class TrailerFactory extends PersistentProxyObjectFactory
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'fleet_set' => FleetSetFactory::new(),
             'name' => ByteString::fromRandom(8),
-            'status' => array_rand($status),
+            'status' => self::faker()->randomElement($status),
             'updatedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
         ];
     }
