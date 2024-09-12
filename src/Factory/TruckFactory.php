@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Factory;
+
+use App\Entity\Truck;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Symfony\Component\String\ByteString;
+
+/**
+ * @extends PersistentProxyObjectFactory<Truck>
+ */
+final class TruckFactory extends PersistentProxyObjectFactory
+{
+    /**
+     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
+     *
+     * @todo inject services if required
+     */
+    public function __construct()
+    {
+    }
+
+    public static function class(): string
+    {
+        return Truck::class;
+    }
+
+    /**
+     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
+     *
+     * @todo add your default values here
+     */
+    protected function defaults(): array|callable
+    {
+        $manufcturer = ['DAF', 'Scania', 'Iveco'];
+        $model = ['DAS', 'MAK', 'FAG', 'LAF', 'NEO'];
+        $status = ['Works', 'Free', 'Downtime'];
+
+        return [
+            'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'fleet_set' => FleetSetFactory::new(),
+            'license_plate' => ByteString::fromRandom(8),
+            'manufacturer' => array_rand($manufcturer),
+            'model' => array_rand($model),
+            'status' => array_rand($status),
+            'updatedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+        ];
+    }
+
+    /**
+     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
+     */
+    protected function initialize(): static
+    {
+        return $this
+            // ->afterInstantiate(function(Truck $truck): void {})
+        ;
+    }
+}

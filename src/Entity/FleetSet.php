@@ -6,7 +6,7 @@ use App\Repository\FleetSetRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use DateTime;
+use DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: FleetSetRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -41,6 +41,7 @@ class FleetSet
     public function __construct()
     {
         $this->drivers = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -107,12 +108,12 @@ class FleetSet
        return $this;
    }
 
-   public function getTruck2(): ?Truck
+   public function getTruck(): ?Truck
    {
        return $this->truck;
    }
 
-   public function setTruck2(Truck $truck): static
+   public function setTruck(Truck $truck): static
    {
        // set the owning side of the relation if necessary
        if ($truck->getFleetSet() !== $this) {
@@ -151,13 +152,13 @@ class FleetSet
    #[ORM\PrePersist] 
    public function onPrePersist()
    {
-       $this->createdAt = new DateTime();  // Set createdAt on insert
-       $this->updatedAt = new DateTime();  // Set updatedAt on insert
+       $this->createdAt = new DateTimeImmutable();  // Set createdAt on insert
+       $this->updatedAt = new DateTimeImmutable();  // Set updatedAt on insert
    }
 
    #[ORM\PreUpdate] 
    public function onPreUpdate()
    {
-       $this->updatedAt = new DateTime();  // Update updatedAt on every update
+       $this->updatedAt = new DateTimeImmutable();  // Update updatedAt on every update
    }
 }

@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Repository\DriverRepository;
 use Doctrine\ORM\Mapping as ORM;
-use DateTime;
+use DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: DriverRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -30,7 +30,7 @@ class Driver
     public function __construct()
     {
         // Set the default value for createdAt to the current time
-        $this->createdAt = new DateTime();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -89,13 +89,13 @@ class Driver
     #[ORM\PrePersist] 
     public function onPrePersist()
     {
-        $this->createdAt = new DateTime();  // Set createdAt on insert
-        $this->updatedAt = new DateTime();  // Set updatedAt on insert
+        $this->createdAt = new DateTimeImmutable();  // Set createdAt on insert
+        $this->updatedAt = new DateTimeImmutable();  // Set updatedAt on insert
     }
 
     #[ORM\PreUpdate] 
     public function onPreUpdate()
     {
-        $this->updatedAt = new DateTime();  // Update updatedAt on every update
+        $this->updatedAt = new DateTimeImmutable();  // Update updatedAt on every update
     }
 }
