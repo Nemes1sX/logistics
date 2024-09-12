@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use App\Repository\DriverRepository;
 use Doctrine\ORM\Mapping as ORM;
+use DateTime;
 
 #[ORM\Entity(repositoryClass: DriverRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Driver
 {
     #[ORM\Id]
@@ -18,6 +20,18 @@ class Driver
 
     #[ORM\ManyToOne(inversedBy: 'drivers')]
     private ?FleetSet $fleetSet = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    public function __construct()
+    {
+        // Set the default value for createdAt to the current time
+        $this->createdAt = new DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -46,5 +60,42 @@ class Driver
         $this->fleetSet = $fleetSet;
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist] 
+    public function onPrePersist()
+    {
+        $this->createdAt = new DateTime();  // Set createdAt on insert
+        $this->updatedAt = new DateTime();  // Set updatedAt on insert
+    }
+
+    #[ORM\PreUpdate] 
+    public function onPreUpdate()
+    {
+        $this->updatedAt = new DateTime();  // Update updatedAt on every update
     }
 }
