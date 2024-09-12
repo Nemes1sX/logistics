@@ -16,28 +16,31 @@ class DriverRepository extends ServiceEntityRepository
         parent::__construct($registry, Driver::class);
     }
 
-    //    /**
-    //     * @return Driver[] Returns an array of Driver objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Driver[] Returns an array of Driver objects
+    */
+    public function findByName($value): array
+    {
+        $qb = $this->createQueryBuilder('d');
 
-    //    public function findOneBySomeField($value): ?Driver
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+          if ($value != '') { 
+            $qb->where($qb->expr()->like('d.name', ':val'))
+            ->setParameter('val', $value.'%');
+          }
+            return $qb->orderBy('d.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+           ;
+       }
+
+    public function findOneBySomeField($value): ?Driver
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }
