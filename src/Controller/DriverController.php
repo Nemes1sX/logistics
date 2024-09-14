@@ -2,14 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Driver;
 use App\Repository\DriverRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
+
+#[Route('/api')]
 class DriverController extends AbstractController
 {
     private readonly DriverRepository $driverRepository;
@@ -19,15 +19,21 @@ class DriverController extends AbstractController
         $this->driverRepository = $driverRepository;
     }
 
-    #[Route('/driver', name: 'app_driver')]
+    #[Route('/driver', methods: ['GET'])]
     public function index(Request $request): JsonResponse
     {   
         $keyword = $request->query->get('keyword', '');
         $drivers = $this->driverRepository->findByName($keyword);
 
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/DriverController.php',
+            'data' => $drivers
         ]);
     }
+
+    #[Route('/drivers', methods: ['GET'])]
+    public function test() : JsonResponse
+    {
+        return  $this->json('Hello world');
+    }
+
 }
