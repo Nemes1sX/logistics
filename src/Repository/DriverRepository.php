@@ -19,13 +19,13 @@ class DriverRepository extends ServiceEntityRepository
     /**
      * @return Driver[] Returns an array of Driver objects
     */
-    public function findByName($value): array
+    public function findByName($keyword): array
     {
         $qb = $this->createQueryBuilder('d');
 
-          if ($value != '') { 
+          if ($keyword != '') { 
             $qb->where($qb->expr()->like('d.name', ':val'))
-            ->setParameter('val', $value.'%');
+            ->setParameter('val', $keyword.'%');
           }
             return $qb->orderBy('d.id', 'ASC')
             ->setMaxResults(10)

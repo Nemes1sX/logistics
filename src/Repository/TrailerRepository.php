@@ -19,17 +19,24 @@ class TrailerRepository extends ServiceEntityRepository
     //    /**
     //     * @return Trailer[] Returns an array of Trailer objects
     //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        public function findByExampleField($name, $status): array
+        {
+            $qb = $this->createQueryBuilder('d');
+
+            if ($name != '') { 
+                $qb = $qb->where($qb->expr()->like('d.name', ':val'))
+                ->setParameter('val', $name.'%');
+              }
+              if ($status != '') { 
+                $qb =  $qb->andWhere('val', $status)
+                ->setParameter('val', $status);
+              }
+               return $qb->orderBy('t.id', 'ASC')
+                ->setMaxResults(10)
+                ->getQuery()
+                ->getResult()
+        ;
+        }
 
     //    public function findOneBySomeField($value): ?Trailer
     //    {

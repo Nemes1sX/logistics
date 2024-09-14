@@ -19,17 +19,25 @@ class TruckRepository extends ServiceEntityRepository
     //    /**
     //     * @return Truck[] Returns an array of Truck objects
     //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        public function findByExampleField($manufacturer, $status): array
+        {
+            $qb = $this->createQueryBuilder('d');
+
+                if ($manufacturer != '') { 
+                    $qb->where($qb->expr()->like('d.manufacturer', ':val'))
+                    ->setParameter('val', $manufacturer.'%');
+                  }
+                  if ($status != '') { 
+                    $qb->andWhere('val', $status)
+                    ->setParameter('val', $status);
+                  }
+
+                return  $qb->orderBy('t.id', 'ASC')
+                ->setMaxResults(10)
+                ->getQuery()
+                ->getResult()
+            ;
+        }
 
     //    public function findOneBySomeField($value): ?Truck
     //    {
