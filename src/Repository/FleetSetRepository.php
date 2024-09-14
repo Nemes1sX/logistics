@@ -19,7 +19,7 @@ class FleetSetRepository extends ServiceEntityRepository
         /**
          * @return FleetSet[] Returns an array of FleetSet objects
          */
-        public function findByExampleField($manufacturer): array
+        public function findByManufacturer($manufacturer): array
         {
             $qb = $this->createQueryBuilder('f')
                 ->leftJoin('f.drivers', 'd')

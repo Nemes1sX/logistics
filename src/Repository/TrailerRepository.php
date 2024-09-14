@@ -19,7 +19,7 @@ class TrailerRepository extends ServiceEntityRepository
     //    /**
     //     * @return Trailer[] Returns an array of Trailer objects
     //     */
-        public function findByExampleField($name, $status): array
+        public function findByNameOrStatus($name, $status): array
         {
             $qb = $this->createQueryBuilder('d');
 
