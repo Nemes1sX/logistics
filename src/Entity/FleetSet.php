@@ -38,10 +38,17 @@ class FleetSet
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    /**
+     * @var Collection<int, Order>
+     */
+    #[ORM\ManyToMany(targetEntity: Order::class, mappedBy: 'fleetSet')]
+    private Collection $orders;
+
     public function __construct()
     {
         $this->drivers = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -160,5 +167,32 @@ class FleetSet
    public function onPreUpdate()
    {
        $this->updatedAt = new DateTimeImmutable();  // Update updatedAt on every update
+   }
+
+   /**
+    * @return Collection<int, Order>
+    */
+   public function getOrders(): Collection
+   {
+       return $this->orders;
+   }
+
+   public function addOrder(Order $order): static
+   {
+       if (!$this->orders->contains($order)) {
+           $this->orders->add($order);
+           $order->addFleetSet($this);
+       }
+
+       return $this;
+   }
+
+   public function removeOrder(Order $order): static
+   {
+       if ($this->orders->removeElement($order)) {
+           $order->removeFleetSet($this);
+       }
+
+       return $this;
    }
 }

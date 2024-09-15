@@ -2,13 +2,13 @@
 
 namespace App\Factory;
 
-use App\Entity\FleetSet;
+use App\Entity\Order;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<FleetSet>
+ * @extends PersistentProxyObjectFactory<Order>
  */
-final class FleetSetFactory extends PersistentProxyObjectFactory
+final class OrderFactory extends PersistentProxyObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -21,7 +21,7 @@ final class FleetSetFactory extends PersistentProxyObjectFactory
 
     public static function class(): string
     {
-        return FleetSet::class;
+        return Order::class;
     }
 
     /**
@@ -31,9 +31,12 @@ final class FleetSetFactory extends PersistentProxyObjectFactory
      */
     protected function defaults(): array|callable
     {
+        $status = ['To deliver', 'In progress', 'Done'];
+
         return [
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'name' => sprintf('Fs no. %03d', self::faker()->numberBetween(1, 9999)),
+            'status' => self::faker()->randomElement($status),
             'updatedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
         ];
     }
@@ -44,7 +47,7 @@ final class FleetSetFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(FleetSet $fleetSet): void {})
+            // ->afterInstantiate(function(Order $order): void {})
         ;
     }
 }

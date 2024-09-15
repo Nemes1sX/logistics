@@ -8,6 +8,7 @@ use App\Entity\Trailer;
 use App\Entity\Truck;
 use App\Factory\DriverFactory;
 use App\Factory\FleetSetFactory;
+use App\Factory\OrderFactory;
 use App\Factory\TrailerFactory;
 use App\Factory\TruckFactory;
 use Symfony\Component\String\ByteString;
@@ -59,7 +60,7 @@ class FleetSetFixture extends Fixture
         $trailers = TrailerFactory::createMany(50);
         $trucks = TruckFactory::createMany(50);*/
 
-        FleetSetFactory::createMany(50, function() {
+        $fleetSets = FleetSetFactory::createMany(50, function() {
             $drivers = DriverFactory::createMany(2);
             
             return [
@@ -67,8 +68,11 @@ class FleetSetFixture extends Fixture
                 'truck' => TruckFactory::new(),
                 'drivers' => $drivers
             ];        
-        }
-        );
-
+        });
+        OrderFactory::createMany(51, function () use ($fleetSets) {
+            return [
+                'fleetSet' => $fleetSets
+            ];
+        });
     }
 }
