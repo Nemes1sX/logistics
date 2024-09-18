@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Trailer;
 use App\Repository\TruckRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Doctrine\ORM\EntityManagerInterface;
 
 class TrailerController extends AbstractController
 {
@@ -18,14 +20,21 @@ class TrailerController extends AbstractController
     }
 
     #[Route('/trailer', name: 'app_trailer')]
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
+        $perPage = $request->query->get('per_page', 10);
+        $pageNumber = $request->query->get('page', 1);
         $name = $request->query->get('name', '');
         $status = $request->query->get('status', '');
-        $trailers = $this->truckRepository->findByNameOrStatus($name, $status);    
+        $trailers = $this->truckRepository->findByNameOrStatus($name, $status); 
+        $totalRecords = $entityManager->getRepository(Trailer::class)->count();
+   
          
         return $this->json([
-            'data' => $trailers
+            'data' => $trailers,
+            'pageNumber' => $pageNumber,
+            'totalRecords' => $totalRecords,
+            'totalPages' => ceil($totalRecords / $perPage)
         ]);
     }
 }
