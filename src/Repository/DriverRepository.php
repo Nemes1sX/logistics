@@ -19,7 +19,7 @@ class DriverRepository extends ServiceEntityRepository
     /**
      * @return Driver[] Returns an array of Driver objects
     */
-    public function findByName($keyword): array
+    public function findByName(int $pageNumber = 1, int $perPage = 10, $keyword): array
     {
         $qb = $this->createQueryBuilder('d');
 
@@ -28,7 +28,8 @@ class DriverRepository extends ServiceEntityRepository
             ->setParameter('val', $keyword.'%');
           }
             return $qb->orderBy('d.id', 'ASC')
-            ->setMaxResults(10)
+            ->setFirstResult(($pageNumber - 1) * $perPage)
+            ->setMaxResults($perPage)
             ->getQuery()
             ->getResult()
            ;
