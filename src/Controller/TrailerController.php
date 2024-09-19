@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTOs\TrailersDTO;
 use App\Entity\Trailer;
 use App\Repository\TruckRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,7 +32,9 @@ class TrailerController extends AbstractController
    
          
         return $this->json([
-            'data' => $trailers,
+            'data' => array_map(function (Trailer $trailer) {
+                return new TrailersDTO($trailer);
+            }, $trailers),
             'pageNumber' => $pageNumber,
             'totalRecords' => $totalRecords,
             'totalPages' => ceil($totalRecords / $perPage)

@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\DTOs\TrucksDTO;
+use App\Entity\Truck;
 use App\Repository\TruckRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,14 +21,23 @@ class TruckController extends AbstractController
     }
     
     #[Route('/truck', name: 'app_truck')]
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
+        $perPage = $request->query->get('per_page', 10);
+        $pageNumber = $request->query->get('page', 1);
         $manufacturer = $request->query->get('manufacturer', '');
         $status = $request->query->get('status', '');
-        $trucks = $this->truckRepository->findByManufacturerOrStatus($manufacturer, $status);
+
+        $trucks = $this->truckRepository->findByManufacturerOrStatus($pageNumber, $perPage, $manufacturer, $status);
+        $totalRecords = $entityManager->getRepository(Truck::class)->count();
 
         return $this->json([
-            'data' => $trucks
+            'data' => array_map(function (Truck $truck) {
+                return new TrucksDTO($truck);
+            }, $trucks),
+            'pageNumber' => $pageNumber,
+            'totalRecords' => $totalRecords,
+            'totalPages' => ceil($totalRecords / $perPage)
         ]);
     }
 }

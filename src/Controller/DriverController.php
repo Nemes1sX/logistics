@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\DTO\DriverDTO;
+use App\DTOs\DriversDTO;
 use App\Entity\Driver;
 use App\Repository\DriverRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,8 +35,8 @@ class DriverController extends AbstractController
         //dd($drivers);
 
         return $this->json([
-            'data' => array_map(function ($user) {
-                return new DriverDTO($user);
+            'data' => array_map(function (Driver $driver) {
+                return new DriversDTO($driver);
             }, $drivers),
             'pageNumber' => $pageNumber,
             'totalRecords' => $totalRecords,
