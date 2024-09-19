@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/api')]
 class TruckController extends AbstractController
 {
     private readonly TruckRepository $truckRepository;
@@ -20,7 +21,7 @@ class TruckController extends AbstractController
         $this->truckRepository = $truckRepository;
     }
     
-    #[Route('/truck', name: 'app_truck')]
+    #[Route('/trucks', name: 'app_truck')]
     public function index(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $perPage = $request->query->get('per_page', 10);

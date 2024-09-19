@@ -24,7 +24,7 @@ class DriverController extends AbstractController
     }
 
     #[Route('/driver', methods: ['GET'])]
-    public function index(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer) : JsonResponse
+    public function index(Request $request, EntityManagerInterface $entityManager) : JsonResponse
     {       
         $perPage = $request->query->get('per_page', 10);
         $pageNumber = $request->query->get('page', 1);
@@ -44,10 +44,13 @@ class DriverController extends AbstractController
         ]);
     }
 
-    #[Route('/drivers', methods: ['GET'])]
-    public function test() : JsonResponse
+    #[Route('/driver/{id}', methods: ['GET'])]
+    public function show(int $id, EntityManagerInterface $entityManager) : JsonResponse
     {
-        return  $this->json('Hello world');
+        $driver = $entityManager->getRepository(Driver::class)->find($id);
+
+        //dd($driver);
+        return $this->json([$driver], 200);
     }
 
 }

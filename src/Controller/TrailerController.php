@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 
+#[Route('/api')]
 class TrailerController extends AbstractController
 {
     private readonly TruckRepository $truckRepository;
@@ -20,13 +21,14 @@ class TrailerController extends AbstractController
         $this->truckRepository = $truckRepository;
     }
 
-    #[Route('/trailer', name: 'app_trailer')]
+    #[Route('/trailers', name: 'app_trailer')]
     public function index(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $perPage = $request->query->get('per_page', 10);
         $pageNumber = $request->query->get('page', 1);
         $name = $request->query->get('name', '');
         $status = $request->query->get('status', '');
+        
         $trailers = $this->truckRepository->findByNameOrStatus($name, $status); 
         $totalRecords = $entityManager->getRepository(Trailer::class)->count();
    
