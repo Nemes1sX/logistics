@@ -19,7 +19,7 @@ class FleetSetRepository extends ServiceEntityRepository
         /**
          * @return FleetSet[] Returns an array of FleetSet objects
          */
-        public function findByManufacturer($manufacturer): array
+        public function findByManufacturer(int $pageNumber = 1, int $perPage = 10, $manufacturer): array
         {
             $qb = $this->createQueryBuilder('f')
                 ->leftJoin('f.drivers', 'd')
@@ -30,7 +30,8 @@ class FleetSetRepository extends ServiceEntityRepository
                     ->setParameter('val', $manufacturer.'%');
                   }
                return $qb->orderBy('f.id', 'ASC')
-                ->setMaxResults(10)
+               ->setFirstResult(($pageNumber - 1) * $perPage)
+               ->setMaxResults($perPage)
                 ->getQuery()
                 ->getResult()
             ;

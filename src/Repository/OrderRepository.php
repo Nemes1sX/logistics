@@ -19,13 +19,20 @@ class OrderRepository extends ServiceEntityRepository
     //    /**
     //     * @return Order[] Returns an array of Order objects
     //     */
-        public function findByExampleField($status): array
+        public function findByStatus(int $pageNumber = 1, int $perPage = 10, string $status = '', string $keyword = null): array
         {
-            return $this->createQueryBuilder('o')
+            $qb = $this->createQueryBuilder('d');
+
+            if ($keyword != '') { 
+             $qb = $qb->where($qb->expr()->like('d.name', ':val'))
+              ->setParameter('val', $keyword.'%');
+            }
+               return $qb 
                 ->andWhere('o.status = :val')
                 ->setParameter('val', $status)
                 ->orderBy('o.id', 'ASC')
-                ->setMaxResults(10)
+                ->setFirstResult(($pageNumber - 1) * $perPage)
+                ->setMaxResults($perPage)
                 ->getQuery()
                 ->getResult()
             ;

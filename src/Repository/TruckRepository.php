@@ -19,7 +19,7 @@ class TruckRepository extends ServiceEntityRepository
     //    /**
     //     * @return Truck[] Returns an array of Truck objects
     //     */
-        public function findByManufacturerOrStatus($manufacturer, $status): array
+        public function findByManufacturerOrStatus(int $pageNumber = 1, int $perPage = 10, $manufacturer, $status): array
         {
             $qb = $this->createQueryBuilder('d');
 
@@ -33,7 +33,8 @@ class TruckRepository extends ServiceEntityRepository
                   }
 
                 return  $qb->orderBy('t.id', 'ASC')
-                ->setMaxResults(10)
+                ->setFirstResult(($pageNumber - 1) * $perPage)
+                ->setMaxResults($perPage)
                 ->getQuery()
                 ->getResult()
             ;

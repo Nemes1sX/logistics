@@ -19,7 +19,7 @@ class DriverRepository extends ServiceEntityRepository
     /**
      * @return Driver[] Returns an array of Driver objects
     */
-    public function findByName(int $pageNumber = 1, int $perPage = 10, $keyword): array
+    public function findByName(int $pageNumber = 1, int $perPage = 10, string $keyword = null): array
     {
         $qb = $this->createQueryBuilder('d');
 
