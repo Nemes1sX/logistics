@@ -19,7 +19,7 @@ class TrailerRepository extends ServiceEntityRepository
     //    /**
     //     * @return Trailer[] Returns an array of Trailer objects
     //     */
-        public function findByNameOrStatus($name, $status): array
+        public function findByNameOrStatus(int $pageNumber = 1, int $perPage = 10, $name, $status): array
         {
             $qb = $this->createQueryBuilder('d');
 
@@ -32,7 +32,8 @@ class TrailerRepository extends ServiceEntityRepository
                 ->setParameter('val', $status);
               }
                return $qb->orderBy('t.id', 'ASC')
-                ->setMaxResults(10)
+               ->setFirstResult(($pageNumber - 1) * $perPage)
+               ->setMaxResults($perPage)
                 ->getQuery()
                 ->getResult()
         ;

@@ -24,11 +24,11 @@ class TruckRepository extends ServiceEntityRepository
             $qb = $this->createQueryBuilder('d');
 
                 if ($manufacturer != '') { 
-                   $qb = $qb->where($qb->expr()->like('d.manufacturer', ':val'))
+                   $qb->where($qb->expr()->like('d.manufacturer', ':val'))
                     ->setParameter('val', $manufacturer.'%');
                   }
                   if ($status != '') { 
-                    $qb = $qb->andWhere('val', $status)
+                    $qb->andWhere('val', $status)
                     ->setParameter('val', $status);
                   }
 

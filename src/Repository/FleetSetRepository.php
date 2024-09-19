@@ -19,14 +19,14 @@ class FleetSetRepository extends ServiceEntityRepository
         /**
          * @return FleetSet[] Returns an array of FleetSet objects
          */
-        public function findByManufacturer(int $pageNumber = 1, int $perPage = 10, $manufacturer): array
+        public function findByManufacturer(int $pageNumber = 1, int $perPage = 10, string $manufacturer = null): array
         {
             $qb = $this->createQueryBuilder('f')
                 ->leftJoin('f.drivers', 'd')
                 ->leftJoin('f.trailers', 't')
                 ->leftJoin('f.truck', 'u');
                 if ($manufacturer != '') { 
-                   $qb =  $qb->where($qb->expr()->like('u.manfacturer', ':val'))
+                   $qb->where($qb->expr()->like('u.manfacturer', ':val'))
                     ->setParameter('val', $manufacturer.'%');
                   }
                return $qb->orderBy('f.id', 'ASC')

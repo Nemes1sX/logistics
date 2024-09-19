@@ -21,16 +21,18 @@ class OrderRepository extends ServiceEntityRepository
     //     */
         public function findByStatus(int $pageNumber = 1, int $perPage = 10, string $status = '', string $keyword = null): array
         {
-            $qb = $this->createQueryBuilder('d');
+            $qb = $this->createQueryBuilder('o');
 
             if ($keyword != '') { 
-             $qb = $qb->where($qb->expr()->like('d.name', ':val'))
+             $qb->where($qb->expr()->like('o.name', ':val'))
               ->setParameter('val', $keyword.'%');
             }
-               return $qb 
+            if ($status != '') { 
+                $qb 
                 ->andWhere('o.status = :val')
-                ->setParameter('val', $status)
-                ->orderBy('o.id', 'ASC')
+                ->setParameter('val', $status);
+            }
+            return $qb->orderBy('o.id', 'ASC')
                 ->setFirstResult(($pageNumber - 1) * $perPage)
                 ->setMaxResults($perPage)
                 ->getQuery()
