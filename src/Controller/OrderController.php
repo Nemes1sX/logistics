@@ -11,18 +11,20 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api')]
+#[Route('/api/orders', name: 'orders_')]
 class OrderController extends AbstractController
 {
     private readonly OrderRepository $orderRepository;
+    private readonly EntityManagerInterface $entityManager;
 
-    public function __construct(OrderRepository $orderRepository)
+    public function __construct(OrderRepository $orderRepository, EntityManagerInterface $entityManager)
     {
         $this->orderRepository = $orderRepository;
+        $this->entityManager = $entityManager;
     }
 
-    #[Route('/orders', name: 'app_order')]
-    public function index(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/', name: 'index', methods: ['GET'])]
+    public function index(Request $request): JsonResponse
     {
         $perPage = $request->query->get('per_page', 10);
         $pageNumber = $request->query->get('page', 1);
@@ -30,7 +32,7 @@ class OrderController extends AbstractController
         $status = $request->query->get('status', '');
 
         $orders = $this->orderRepository->findByStatus($pageNumber, $perPage, $status, $name);
-        $totalRecords = $entityManager->getRepository(Order::class)->count();
+        $totalRecords = $this->entityManager->getRepository(Order::class)->count();
  
         return $this->json([
           'data' => array_map(function(Order $order) {
@@ -40,5 +42,14 @@ class OrderController extends AbstractController
           'totalRecords' => $totalRecords,
           'totalPages' => ceil($totalRecords / $perPage)
         ]);
+    }
+
+    
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    public function show(int $id) : JsonResponse
+    {
+        $order = $this->entityManager->getRepository(Order::class)->find($id);
+
+        return $this->json($order, 200);
     }
 }

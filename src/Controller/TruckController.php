@@ -11,18 +11,20 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api')]
+#[Route('/api/trucks', name: 'truck_')]
 class TruckController extends AbstractController
 {
     private readonly TruckRepository $truckRepository;
+    private readonly EntityManagerInterface $entityManager;
 
-    public function __construct(TruckRepository $truckRepository)
+    public function __construct(TruckRepository $truckRepository, EntityManagerInterface $entityManagerInterface)
     {
         $this->truckRepository = $truckRepository;
+        $this->entityManager = $entityManagerInterface;
     }
     
-    #[Route('/trucks', name: 'app_truck')]
-    public function index(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/', name: 'index', methods: ['GET'])]
+    public function index(Request $request): JsonResponse
     {
         $perPage = $request->query->get('per_page', 10);
         $pageNumber = $request->query->get('page', 1);
@@ -30,7 +32,7 @@ class TruckController extends AbstractController
         $status = $request->query->get('status', '');
 
         $trucks = $this->truckRepository->findByManufacturerOrStatus($pageNumber, $perPage, $manufacturer, $status);
-        $totalRecords = $entityManager->getRepository(Truck::class)->count();
+        $totalRecords = $this->entityManager->getRepository(Truck::class)->count();
 
         return $this->json([
             'data' => array_map(function (Truck $truck) {
@@ -40,5 +42,13 @@ class TruckController extends AbstractController
             'totalRecords' => $totalRecords,
             'totalPages' => ceil($totalRecords / $perPage)
         ]);
+    }
+
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    public function show(int $id) : JsonResponse
+    {
+        $truck = $this->entityManager->getRepository(Truck::class)->find($id);
+
+        return $this->json($truck, 200);
     }
 }

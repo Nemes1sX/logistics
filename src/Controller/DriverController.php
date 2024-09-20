@@ -10,27 +10,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
-
-#[Route('/api')]
+#[Route('/api', name: 'driver_')]
 class DriverController extends AbstractController
 {
     private readonly DriverRepository $driverRepository;
+    private readonly EntityManagerInterface $entityManager;
 
-    public function __construct(DriverRepository $driverRepository)
+    public function __construct(DriverRepository $driverRepository, EntityManagerInterface $entityManager)
     {
         $this->driverRepository = $driverRepository;
+        $this->entityManager = $entityManager;
     }
 
-    #[Route('/driver', methods: ['GET'])]
-    public function index(Request $request, EntityManagerInterface $entityManager) : JsonResponse
+    #[Route('/', name: 'index', methods: ['GET'])]
+    public function index(Request $request) : JsonResponse
     {       
         $perPage = $request->query->get('per_page', 10);
         $pageNumber = $request->query->get('page', 1);
         $keyword = $request->query->get('keyword', '');
         $drivers = $this->driverRepository->findByName($keyword);
-        $totalRecords = $entityManager->getRepository(Driver::class)->count();
+        $totalRecords = $this->entityManager->getRepository(Driver::class)->count();
 
         //dd($drivers);
 
@@ -45,11 +45,10 @@ class DriverController extends AbstractController
     }
 
     #[Route('/driver/{id}', methods: ['GET'])]
-    public function show(int $id, EntityManagerInterface $entityManager) : JsonResponse
+    public function show(int $id) : JsonResponse
     {
-        $driver = $entityManager->getRepository(Driver::class)->find($id);
+        $driver = $this->entityManager->getRepository(Driver::class)->find($id);
 
-        //dd($driver);
         return $this->json([$driver], 200);
     }
 
