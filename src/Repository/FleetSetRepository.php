@@ -23,13 +23,14 @@ class FleetSetRepository extends ServiceEntityRepository
         {
             $qb = $this->createQueryBuilder('f')
                 ->leftJoin('f.drivers', 'd')
-                ->leftJoin('f.trailers', 't')
+                ->leftJoin('f.trailer', 't')
                 ->leftJoin('f.truck', 'u');
                 if ($manufacturer != '') { 
                    $qb->where($qb->expr()->like('u.manfacturer', ':val'))
                     ->setParameter('val', $manufacturer.'%');
                   }
-               return $qb->orderBy('f.id', 'ASC')
+               return $qb->addSelect('d', 't', 'u')
+               ->orderBy('f.id', 'ASC')
                ->setFirstResult(($pageNumber - 1) * $perPage)
                ->setMaxResults($perPage)
                 ->getQuery()

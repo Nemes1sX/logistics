@@ -3,7 +3,7 @@
 namespace App\DTOs;
 
 use App\Entity\Truck;
-use DateTimeImmutable;
+use Carbon\CarbonImmutable;
 
 class TrucksDTO
 {
@@ -11,8 +11,8 @@ class TrucksDTO
     public string $manufacturer;
     public string $model;
     public string $status;
-    public DateTimeImmutable $createdAt;
-    public DateTimeImmutable $updatedAt;
+    public string $createdAt;
+    public string $updatedAt;
     
     public function __construct(Truck $truck)
     {
@@ -20,7 +20,7 @@ class TrucksDTO
         $this->manufacturer = $truck->getManufacturer();
         $this->model = $truck->getModel();
         $this->status = $truck->getStatus();
-        $this->createdAt = $truck->getCreatedAt();
-        $this->updatedAt = $truck->getUpdatedAt();
+        $this->createdAt = CarbonImmutable::instance($truck->getCreatedAt())->toDateString();
+        $this->updatedAt = CarbonImmutable::instance($truck->getUpdatedAt())->toDateString();
     }
 }

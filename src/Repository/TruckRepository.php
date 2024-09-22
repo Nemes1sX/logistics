@@ -19,12 +19,12 @@ class TruckRepository extends ServiceEntityRepository
     //    /**
     //     * @return Truck[] Returns an array of Truck objects
     //     */
-        public function findByManufacturerOrStatus(int $pageNumber = 1, int $perPage = 10, $manufacturer, $status): array
+        public function findByManufacturerOrStatus(int $pageNumber = 1, int $perPage = 10,  string $manufacturer = null, string $status = null): array
         {
-            $qb = $this->createQueryBuilder('d');
+            $qb = $this->createQueryBuilder('t');
 
                 if ($manufacturer != '') { 
-                   $qb->where($qb->expr()->like('d.manufacturer', ':val'))
+                   $qb->where($qb->expr()->like('t.manufacturer', ':val'))
                     ->setParameter('val', $manufacturer.'%');
                   }
                   if ($status != '') { 

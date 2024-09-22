@@ -19,12 +19,12 @@ class TrailerRepository extends ServiceEntityRepository
     //    /**
     //     * @return Trailer[] Returns an array of Trailer objects
     //     */
-        public function findByNameOrStatus(int $pageNumber = 1, int $perPage = 10, $name, $status): array
+        public function findByNameOrStatus(int $pageNumber = 1, int $perPage = 10, string $name = null, string $status = null): array
         {
-            $qb = $this->createQueryBuilder('d');
+            $qb = $this->createQueryBuilder('t');
 
             if ($name != '') { 
-                $qb = $qb->where($qb->expr()->like('d.name', ':val'))
+                $qb = $qb->where($qb->expr()->like('t.name', ':val'))
                 ->setParameter('val', $name.'%');
               }
               if ($status != '') { 

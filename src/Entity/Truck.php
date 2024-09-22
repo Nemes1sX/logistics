@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\TruckRepository;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: TruckRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -29,6 +30,7 @@ class Truck
 
     #[ORM\OneToOne(inversedBy: 'truck', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Ignore]
     private ?FleetSet $fleet_set = null;
 
     #[ORM\Column]

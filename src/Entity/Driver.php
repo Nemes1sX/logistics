@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\DriverRepository;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: DriverRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -19,6 +20,7 @@ class Driver
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'drivers')]
+    #[Ignore]
     private ?FleetSet $fleetSet = null;
 
     #[ORM\Column]
