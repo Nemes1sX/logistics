@@ -5,6 +5,7 @@ namespace App\Factory;
 use App\Entity\Truck;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Symfony\Component\String\ByteString;
+use Carbon\Carbon;
 
 /**
  * @extends PersistentProxyObjectFactory<Truck>
@@ -37,13 +38,13 @@ final class TruckFactory extends PersistentProxyObjectFactory
         $status = ['Works', 'Free', 'Downtime'];
 
         return [
-            'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'createdAt' => \DateTimeImmutable::createFromMutable(Carbon::now()),
             'fleet_set' => FleetSetFactory::new(),
             'license_plate' => ByteString::fromRandom(8),
             'manufacturer' => self::faker()->randomElement($manufcturer),
             'model' => self::faker()->randomElement($model),
             'status' => self::faker()->randomElement($status),
-            'updatedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'updatedAt' => \DateTimeImmutable::createFromMutable(Carbon::now()),
         ];
     }
 

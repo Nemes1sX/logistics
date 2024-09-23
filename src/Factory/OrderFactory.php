@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\Order;
+use Carbon\Carbon;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -34,10 +35,10 @@ final class OrderFactory extends PersistentProxyObjectFactory
         $status = ['To deliver', 'In progress', 'Done'];
 
         return [
-            'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'createdAt' => \DateTimeImmutable::createFromMutable(Carbon::now()),
             'name' => sprintf('Fs no. %03d', self::faker()->numberBetween(1, 9999)),
             'status' => self::faker()->randomElement($status),
-            'updatedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'updatedAt' => \DateTimeImmutable::createFromMutable(Carbon::now()),
         ];
     }
 

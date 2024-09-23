@@ -3,7 +3,10 @@
 namespace App\Factory;
 
 use App\Entity\Driver;
+use Carbon\Carbon;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+
+use function Symfony\Component\Clock\now;
 
 /**
  * @extends PersistentProxyObjectFactory<Driver>
@@ -32,9 +35,9 @@ final class DriverFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'createdAt' => \DateTimeImmutable::createFromMutable(Carbon::now()),
             'name' => self::faker()->name(),
-            'updatedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'updatedAt' => \DateTimeImmutable::createFromMutable(Carbon::now()),
         ];
     }
 

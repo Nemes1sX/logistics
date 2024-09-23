@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\FleetSet;
+use Carbon\Carbon;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -32,9 +33,9 @@ final class FleetSetFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'createdAt' => \DateTimeImmutable::createFromMutable(Carbon::now()),
             'name' => sprintf('Fs no. %03d', self::faker()->numberBetween(1, 9999)),
-            'updatedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'updatedAt' => \DateTimeImmutable::createFromMutable(Carbon::now()),
         ];
     }
 

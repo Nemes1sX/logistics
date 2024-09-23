@@ -5,6 +5,7 @@ namespace App\Factory;
 use App\Entity\Trailer;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Symfony\Component\String\ByteString;
+use Carbon\Carbon;
 
 /**
  * @extends PersistentProxyObjectFactory<Trailer>
@@ -35,11 +36,11 @@ final class TrailerFactory extends PersistentProxyObjectFactory
         $status = ['Works', 'Free', 'Downtime'];
 
         return [
-            'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'createdAt' => \DateTimeImmutable::createFromMutable(Carbon::now()),
             'fleet_set' => FleetSetFactory::new(),
             'name' => ByteString::fromRandom(8),
             'status' => self::faker()->randomElement($status),
-            'updatedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'updatedAt' => \DateTimeImmutable::createFromMutable(Carbon::now()),
         ];
     }
 
