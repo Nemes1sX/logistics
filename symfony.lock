@@ -1,4 +1,13 @@
 {
+    "dama/doctrine-test-bundle": {
+        "version": "8.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "7.2",
+            "ref": "896306d79d4ee143af9eadf9b09fd34a8c391b70"
+        }
+    },
     "doctrine/doctrine-bundle": {
         "version": "2.13",
         "recipe": {
@@ -55,6 +64,9 @@
             "version": "4.0",
             "ref": "cc04e10cf7171525b50c18b36004edf64cb478be"
         }
+    },
+    "liip/test-fixtures-bundle": {
+        "version": "3.1.0"
     },
     "phpunit/phpunit": {
         "version": "9.6",
@@ -148,6 +160,19 @@
         "files": [
             "./config/packages/routing.yaml",
             "./config/routes.yaml"
+        ]
+    },
+    "symfony/translation": {
+        "version": "7.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.3",
+            "ref": "e28e27f53663cc34f0be2837aba18e3a1bef8e7b"
+        },
+        "files": [
+            "./config/packages/translation.yaml",
+            "./translations/.gitignore"
         ]
     },
     "symfony/validator": {

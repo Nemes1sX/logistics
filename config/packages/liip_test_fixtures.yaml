@@ -1,0 +1,5 @@
+#config/packages/test/liip_test_fixtures.yaml
+liip_test_fixtures:
+       cache_db:
+        # Use true to enable caching for any supported database, including PostgreSQL
+        enabled: true
