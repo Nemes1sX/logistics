@@ -38,13 +38,16 @@ class FleetSetRepository extends ServiceEntityRepository
             ;
         }
 
-    //    public function findOneBySomeField($value): ?FleetSet
-    //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        public function findOneBySomeField(int $id): ?FleetSet
+        {
+            return $this->createQueryBuilder('f')
+                ->leftJoin('f.drivers', 'd')
+                ->leftJoin('f.trailer', 't')
+                ->leftJoin('f.truck', 'u')
+                ->andWhere('f.id = :val')
+                ->setParameter('val', $id)
+                ->getQuery()
+                ->getOneOrNullResult()
+            ;
+        }
 }

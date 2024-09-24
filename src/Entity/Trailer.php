@@ -6,6 +6,7 @@ use App\Repository\TrailerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
 use DateTimeImmutable;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: TrailerRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -24,6 +25,7 @@ class Trailer
 
     #[ORM\OneToOne(inversedBy: 'trailer', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Ignore]
     private ?FleetSet $fleet_set = null;
 
     #[ORM\Column]

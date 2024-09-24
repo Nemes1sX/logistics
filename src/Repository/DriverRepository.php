@@ -31,6 +31,7 @@ class DriverRepository extends ServiceEntityRepository
             ->setFirstResult(($pageNumber - 1) * $perPage)
             ->setMaxResults($perPage)
             ->getQuery()
+            ->getScalarResult()
             ->getResult()
            ;
        }

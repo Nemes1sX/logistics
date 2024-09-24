@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
+use Symfony\Component\Serializer\Attribute\Ignore;
+use Symfony\Component\Serializer\Attribute\MaxDepth;
 
 #[ORM\Entity(repositoryClass: FleetSetRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -23,12 +25,15 @@ class FleetSet
     /**
      * @var Collection<int, Driver>
      */
+    #[MaxDepth(2)]
     #[ORM\OneToMany(targetEntity: Driver::class, mappedBy: 'fleetSet')]
     private Collection $drivers;
 
+    #[MaxDepth(1)]
     #[ORM\OneToOne(mappedBy: 'fleet_set', cascade: ['persist', 'remove'])]
     private ?Trailer $trailer = null;
 
+    #[MaxDepth(1)]
     #[ORM\OneToOne(mappedBy: 'fleet_set', cascade: ['persist', 'remove'])]
     private ?Truck $truck = null;
 
@@ -41,6 +46,7 @@ class FleetSet
     /**
      * @var Collection<int, Order>
      */
+    #[Ignore]
     #[ORM\ManyToMany(targetEntity: Order::class, mappedBy: 'fleetSet')]
     private Collection $orders;
 
