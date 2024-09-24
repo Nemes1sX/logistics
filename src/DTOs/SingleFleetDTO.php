@@ -6,14 +6,13 @@ use App\Entity\FleetSet;
 use Carbon\CarbonImmutable;
 use Doctrine\Common\Collections\Collection;
 
-class FleetSetsDTO
+class SingleFleetSetDTO
 {
     public string $id;
     public string $name;
-    public ?Collection $drivers;
-    public string $trailerName;
-    public string $truckManufacturer;
-    public string $truckModel;
+    public Collection $drivers;
+    public TrailersDTO $trailer;
+    public TrucksDTO $truck;
     public string $createdAt;
     public string $updatedAt;
 
@@ -22,9 +21,8 @@ class FleetSetsDTO
         $this->id = $fleetSet->getId();
         $this->name = $fleetSet->getName();
         $this->drivers = $fleetSet->getDrivers();
-        $this->trailerName = $fleetSet->getTrailer()->getName();
-        $this->truckManufacturer = $fleetSet->getTruck()->getManufacturer();
-        $this->truckModel = $fleetSet->getTruck()->getModel();
+        $this->trailer = new TrailersDTO($fleetSet->getTrailer());
+        $this->truck = new TrucksDTO($fleetSet->getTruck());
         $this->createdAt = CarbonImmutable::instance($fleetSet->getCreatedAt())->toDateString();
         $this->updatedAt = CarbonImmutable::instance($fleetSet->getUpdatedAt())->toDateString();
     }
