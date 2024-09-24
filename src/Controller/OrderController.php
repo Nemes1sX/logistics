@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\DTOs\OrdersDTO;
+use App\DTOs\SingleOrderDTO;
 use App\Entity\Order;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -50,6 +51,6 @@ class OrderController extends AbstractController
     {
         $order = $this->entityManager->getRepository(Order::class)->find($id);
 
-        return $this->json($order, 200);
+        return $this->json(new SingleOrderDTO($order), 200);
     }
 }

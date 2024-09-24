@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\DTOs\TrailersDTO;
 use App\Entity\Trailer;
+use App\Repository\TrailerRepository;
 use App\Repository\TruckRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,12 +15,12 @@ use Doctrine\ORM\EntityManagerInterface;
 #[Route('/api/trailers', name: 'trailer_')]
 class TrailerController extends AbstractController
 {
-    private readonly TruckRepository $truckRepository;
+    private readonly TrailerRepository $trailerRepository;
     private readonly EntityManagerInterface $entityManager;
 
-    public function __construct(TruckRepository $truckRepository, EntityManagerInterface $entityManager)
+    public function __construct(TrailerRepository $trailerRepository, EntityManagerInterface $entityManager)
     {
-        $this->truckRepository = $truckRepository;
+        $this->trailerRepository = $trailerRepository;
         $this->entityManager = $entityManager;
     }
 
@@ -31,7 +32,7 @@ class TrailerController extends AbstractController
         $name = $request->query->get('name', '');
         $status = $request->query->get('status', '');
         
-        $trailers = $this->truckRepository->findByNameOrStatus($name, $status); 
+        $trailers = $this->trailerRepository->findByNameOrStatus($pageNumber, $perPage, $name, $status); 
         $totalRecords = $this->entityManager->getRepository(Trailer::class)->count();
    
          
