@@ -4,8 +4,7 @@ namespace App\Controller;
 
 use App\DTOs\DriversDTO;
 use App\Entity\Driver;
-use App\Repository\DriverRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Interface\IDriverService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,13 +15,11 @@ use OpenApi\Attributes as OA;
 #[Route('/api/drivers', name: 'driver_')]
 class DriverController extends AbstractController
 {
-    private readonly DriverRepository $driverRepository;
-    private readonly EntityManagerInterface $entityManager;
+    private readonly IDriverService $driverSerivce;
 
-    public function __construct(DriverRepository $driverRepository, EntityManagerInterface $entityManager)
+    public function __construct(IDriverService $driverSerivce)
     {
-        $this->driverRepository = $driverRepository;
-        $this->entityManager = $entityManager;
+        $this->driverSerivce = $driverSerivce;
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
@@ -57,8 +54,8 @@ class DriverController extends AbstractController
         $perPage = $request->query->get('per_page', 10);
         $pageNumber = $request->query->get('page', 1);
         $keyword = $request->query->get('keyword', '');
-        $drivers = $this->driverRepository->findByName($pageNumber, $perPage, $keyword);
-        $totalRecords = $this->entityManager->getRepository(Driver::class)->count();
+        $drivers = $this->driverSerivce->getAllDrivers($pageNumber, $perPage, $keyword);
+        $totalRecords = $this->driverSerivce->getTotalDrivers();
 
         return $this->json([
             'data' => array_map(function (Driver $driver) {
@@ -87,7 +84,7 @@ class DriverController extends AbstractController
     #[Route('/{id}', methods: ['GET'])]
     public function show(int $id) : JsonResponse
     {
-        $driver = $this->entityManager->getRepository(Driver::class)->find($id);
+        $driver = $this->driverSerivce->getDriver($id);
 
         return $this->json([$driver], 200);
     }
