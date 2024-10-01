@@ -5,12 +5,13 @@ namespace App\Controller;
 use App\DTOs\TrailersDTO;
 use App\Entity\Trailer;
 use App\Repository\TrailerRepository;
-use App\Repository\TruckRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Attributes as OA;
 
 #[Route('/api/trailers', name: 'trailer_')]
 class TrailerController extends AbstractController
@@ -25,6 +26,38 @@ class TrailerController extends AbstractController
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns all drivers',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: TrailersDTO::class, groups: ['full']))
+        )
+    )]
+    #[OA\Parameter(
+        name: 'per_page',
+        in: 'query',
+        description: 'The field used to show records per page',
+        schema: new OA\Schema(type: 'int')
+    )]
+    #[OA\Parameter(
+        name: 'page_number',
+        in: 'query',
+        description: 'The field used to show page of records',
+        schema: new OA\Schema(type: 'int')
+    )]
+    #[OA\Parameter(
+        name: 'name',
+        in: 'query',
+        description: 'The keyword is used to search trailer by name',
+        schema: new OA\Schema(type: 'string')
+    )]
+    #[OA\Parameter(
+        name: 'status',
+        in: 'query',
+        description: 'The keyword is used to search trailers by status',
+        schema: new OA\Schema(type: 'string')
+    )]
     public function index(Request $request): JsonResponse
     {
         $perPage = $request->query->get('per_page', 10);
@@ -47,6 +80,20 @@ class TrailerController extends AbstractController
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'])] 
+    #[OA\Response(
+        response: 200,
+        description: 'Returns single trailer',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Trailer::class, groups: ['full']))
+        )
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        in: 'query',
+        description: 'Id of the trailer',
+        schema: new OA\Schema(type: 'int')
+    )]
     public function show(int $id) : JsonResponse
     {
         $trailer = $this->entityManager->getRepository(Trailer::class)->find($id);
