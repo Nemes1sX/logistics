@@ -39,13 +39,5 @@ class TrailerRepository extends ServiceEntityRepository
         ;
         }
 
-    //    public function findOneBySomeField($value): ?Trailer
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+
 }

@@ -40,13 +40,5 @@ class TruckRepository extends ServiceEntityRepository
             ;
         }
 
-    //    public function findOneBySomeField($value): ?Truck
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+
 }
