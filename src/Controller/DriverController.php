@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api', name: 'driver_')]
+#[Route('/api/drivers', name: 'driver_')]
 class DriverController extends AbstractController
 {
     private readonly DriverRepository $driverRepository;
@@ -29,10 +29,8 @@ class DriverController extends AbstractController
         $perPage = $request->query->get('per_page', 10);
         $pageNumber = $request->query->get('page', 1);
         $keyword = $request->query->get('keyword', '');
-        $drivers = $this->driverRepository->findByName($keyword);
+        $drivers = $this->driverRepository->findByName($pageNumber, $perPage, $keyword);
         $totalRecords = $this->entityManager->getRepository(Driver::class)->count();
-
-        //dd($drivers);
 
         return $this->json([
             'data' => array_map(function (Driver $driver) {
@@ -44,7 +42,7 @@ class DriverController extends AbstractController
         ]);
     }
 
-    #[Route('/driver/{id}', methods: ['GET'])]
+    #[Route('/{id}', methods: ['GET'])]
     public function show(int $id) : JsonResponse
     {
         $driver = $this->entityManager->getRepository(Driver::class)->find($id);
