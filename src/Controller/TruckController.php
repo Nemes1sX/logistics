@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\DTOs\TrucksDTO;
 use App\Entity\Truck;
-use App\Repository\TruckRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Interface\ITruckService;
+use App\Service\TruckService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,13 +16,11 @@ use OpenApi\Attributes as OA;
 #[Route('/api/trucks', name: 'truck_')]
 class TruckController extends AbstractController
 {
-    private readonly TruckRepository $truckRepository;
-    private readonly EntityManagerInterface $entityManager;
+    private readonly ITruckService $truckService;
 
-    public function __construct(TruckRepository $truckRepository, EntityManagerInterface $entityManagerInterface)
+    public function __construct(TruckService $truckService)
     {
-        $this->truckRepository = $truckRepository;
-        $this->entityManager = $entityManagerInterface;
+        $this->truckService = $truckService;
     }
     
     #[Route('/', name: 'index', methods: ['GET'])]
@@ -65,8 +63,8 @@ class TruckController extends AbstractController
         $manufacturer = $request->query->get('manufacturer', '');
         $status = $request->query->get('status', '');
 
-        $trucks = $this->truckRepository->findByManufacturerOrStatus($pageNumber, $perPage, $manufacturer, $status);
-        $totalRecords = $this->entityManager->getRepository(Truck::class)->count();
+        $trucks = $this->truckService->getAllTrucks($pageNumber, $perPage, $manufacturer, $status);
+        $totalRecords = $this->truckService->getTotalTrucks();
 
         return $this->json([
             'data' => array_map(function (Truck $truck) {
@@ -95,7 +93,7 @@ class TruckController extends AbstractController
     )]
     public function show(int $id) : JsonResponse
     {
-        $truck = $this->entityManager->getRepository(Truck::class)->find($id);
+        $truck = $this->truckService->getTruck($id);
 
         return $this->json($truck, 200);
     }
