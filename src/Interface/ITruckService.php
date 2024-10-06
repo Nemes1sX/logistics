@@ -8,4 +8,5 @@ interface ITruckService
 {
     function getAllTrucks(int $pageNumber = 1, int $perPage = 10, string $manufacturer = '', string $status = '') : array;
     function getTruck(int $id) : Truck;
+    function getTotalTrucks() : int;
 }
