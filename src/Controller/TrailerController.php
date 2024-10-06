@@ -4,25 +4,22 @@ namespace App\Controller;
 
 use App\DTOs\TrailersDTO;
 use App\Entity\Trailer;
-use App\Repository\TrailerRepository;
+use App\Interface\ITrailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Attributes as OA;
 
 #[Route('/api/trailers', name: 'trailer_')]
 class TrailerController extends AbstractController
 {
-    private readonly TrailerRepository $trailerRepository;
-    private readonly EntityManagerInterface $entityManager;
-
-    public function __construct(TrailerRepository $trailerRepository, EntityManagerInterface $entityManager)
+    private readonly ITrailerService $trailerService;
+ 
+    public function __construct(ITrailerService $trailerService)
     {
-        $this->trailerRepository = $trailerRepository;
-        $this->entityManager = $entityManager;
+        $this->$trailerService = $trailerService;
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
@@ -65,8 +62,8 @@ class TrailerController extends AbstractController
         $name = $request->query->get('name', '');
         $status = $request->query->get('status', '');
         
-        $trailers = $this->trailerRepository->findByNameOrStatus($pageNumber, $perPage, $name, $status); 
-        $totalRecords = $this->entityManager->getRepository(Trailer::class)->count();
+        $trailers = $this->trailerService->getAllTrailers($pageNumber, $perPage, $name, $status); 
+        $totalRecords = $this->trailerService->getTotalTrailers();
    
          
         return $this->json([
@@ -96,7 +93,7 @@ class TrailerController extends AbstractController
     )]
     public function show(int $id) : JsonResponse
     {
-        $trailer = $this->entityManager->getRepository(Trailer::class)->find($id);
+        $trailer = $this->trailerService->getTrailer($id);
 
         return $this->json($trailer, 200);
     }
