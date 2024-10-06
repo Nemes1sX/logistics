@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\Truck;
 use App\Interface\ITruckService;
 use App\Repository\TruckRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 class TruckService implements ITruckService
 {
