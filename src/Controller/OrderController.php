@@ -5,8 +5,7 @@ namespace App\Controller;
 use App\DTOs\OrdersDTO;
 use App\DTOs\SingleOrderDTO;
 use App\Entity\Order;
-use App\Repository\OrderRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Interface\IOrderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,13 +16,11 @@ use OpenApi\Attributes as OA;
 #[Route('/api/orders', name: 'orders_')]
 class OrderController extends AbstractController
 {
-    private readonly OrderRepository $orderRepository;
-    private readonly EntityManagerInterface $entityManager;
+    private readonly IOrderService $orderService;
 
-    public function __construct(OrderRepository $orderRepository, EntityManagerInterface $entityManager)
+    public function __construct(IOrderService $orderService)
     {
-        $this->orderRepository = $orderRepository;
-        $this->entityManager = $entityManager;
+        $this->orderService = $orderService;
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
@@ -66,8 +63,8 @@ class OrderController extends AbstractController
         $name = $request->query->get('name', '');
         $status = $request->query->get('status', '');
 
-        $orders = $this->orderRepository->findByStatus($pageNumber, $perPage, $status, $name);
-        $totalRecords = $this->entityManager->getRepository(Order::class)->count();
+        $orders = $this->orderService->getAllOrders($pageNumber, $perPage, $status, $name);
+        $totalRecords = $this->orderService->getTotalOrders();
  
         return $this->json([
           'data' => array_map(function(Order $order) {
@@ -97,7 +94,7 @@ class OrderController extends AbstractController
   )]
     public function show(int $id) : JsonResponse
     {
-        $order = $this->entityManager->getRepository(Order::class)->find($id);
+        $order = $this->orderService->getOrder($id);
 
         return $this->json(new SingleOrderDTO($order), 200);
     }
