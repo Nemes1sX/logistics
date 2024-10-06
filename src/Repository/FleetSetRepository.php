@@ -30,9 +30,9 @@ class FleetSetRepository extends ServiceEntityRepository
                     ->setParameter('val', $manufacturer.'%');
                   }
                return $qb->addSelect('d', 't', 'u')
-               ->orderBy('f.id', 'ASC')
-               ->setFirstResult(($pageNumber - 1) * $perPage)
-               ->setMaxResults($perPage)
+                ->orderBy('f.id', 'ASC')
+                ->setFirstResult(($pageNumber - 1) * $perPage)
+                ->setMaxResults($perPage)
                 ->getQuery()
                 ->getResult()
             ;

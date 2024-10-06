@@ -5,8 +5,7 @@ namespace App\Controller;
 use App\DTOs\FleetSetsDTO;
 use App\DTOs\SingleFleetSetDTO;
 use App\Entity\FleetSet;
-use App\Repository\FleetSetRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Interface\IFleetSetSerivce;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,13 +16,11 @@ use OpenApi\Attributes as OA;
 #[Route('/api/fleet-sets', name: 'fleet-set_')]
 class FleetSetController extends AbstractController
 {
-    private readonly FleetSetRepository $fleetSetRepository;
-    private readonly EntityManagerInterface $entityManager;
+    private readonly IFleetSetSerivce $fleetSetService;
 
-    public function __construct(FleetSetRepository $fleetSetRepository, EntityManagerInterface $entityManager)
+    public function __construct(IFleetSetSerivce $fleetSetService)
     {
-        $this->fleetSetRepository = $fleetSetRepository;
-        $this->entityManager = $entityManager;
+        $this->$fleetSetService = $fleetSetService;
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
@@ -58,10 +55,9 @@ class FleetSetController extends AbstractController
         $perPage = $request->query->get('per_page', 10);
         $pageNumber = $request->query->get('page', 1);
         $manufacturer = $request->query->get('manufacturer', '');
-        $fleetSets =  $this->fleetSetRepository->findByManufacturer($pageNumber, $perPage, $manufacturer);
-        $totalRecords = $this->entityManager->getRepository(FleetSet::class)->count();
-
-        
+        $fleetSets =  $this->fleetSetService->getAllFleetSets($pageNumber, $perPage, $manufacturer);
+        $totalRecords = $this->fleetSetService->getTotalFleetSets();
+    
         return $this->json([
             'data' => array_map(function(FleetSet $fleetSet) {
                 return new FleetSetsDTO($fleetSet);
@@ -89,7 +85,7 @@ class FleetSetController extends AbstractController
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(int $id) : JsonResponse
     {
-        $fleetSet = $this->entityManager->getRepository(FleetSet::class)->find($id);
+        $fleetSet = $this->fleetSetService->getFleetSet($id);
 
         return $this->json(new SingleFleetSetDTO($fleetSet), 200);
     }
