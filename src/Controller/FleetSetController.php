@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\DTOs\FleetSetsDTO;
 use App\DTOs\SingleFleetSetDTO;
 use App\Entity\FleetSet;
-use App\Interface\IFleetSetSerivce;
+use App\Interface\IFleetSetService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,11 +16,11 @@ use OpenApi\Attributes as OA;
 #[Route('/api/fleet-sets', name: 'fleet-set_')]
 class FleetSetController extends AbstractController
 {
-    private readonly IFleetSetSerivce $fleetSetService;
+    private readonly IFleetSetService $fleetSetService;
 
-    public function __construct(IFleetSetSerivce $fleetSetService)
+    public function __construct(IFleetSetService $fleetSetService)
     {
-        $this->$fleetSetService = $fleetSetService;
+        $this->fleetSetService = $fleetSetService;
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]

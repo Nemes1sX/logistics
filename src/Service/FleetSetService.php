@@ -3,10 +3,10 @@
 namespace App\Service;
 
 use App\Entity\FleetSet;
-use App\Interface\IFleetSetSerivce;
+use App\Interface\IFleetSetService;
 use App\Repository\FleetSetRepository;
 
-class FleetSetService implements IFleetSetSerivce
+class FleetSetService implements IFleetSetService
 {
     private readonly FleetSetRepository $fleetSetRepository;
 
