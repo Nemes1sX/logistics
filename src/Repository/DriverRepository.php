@@ -37,14 +37,13 @@ class DriverRepository extends ServiceEntityRepository
 
   public function totalDrivers(string $keyword = null): int
   {
-    $qb = $this->createQueryBuilder('d');
-       $qb->select($qb->expr()->count('d.id'));
+    $qb = $this->createQueryBuilder('d')->select('count(d.id)');
 
       if ($keyword != '') {
         $qb->where($qb->expr()->like('d.name', ':val'))
           ->setParameter('val', ucfirst($keyword) . '%');
       }
-      
+
     return $qb->getQuery() 
       ->getSingleScalarResult();
   }

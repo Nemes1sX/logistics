@@ -7,26 +7,25 @@ use App\Interface\IDriverService;
 use App\Repository\DriverRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class DriverService implements IDriverService
+class DriverService extends BaseService implements IDriverService
 {
     private readonly DriverRepository $driverRepository;
-    private readonly SerializerInterface $serializerInterface;
 
-    public function __construct(DriverRepository $driverRepository, SerializerInterface $serializerInterface)
+    public function __construct(SerializerInterface $serializer, DriverRepository $driverRepository)
     {
+        parent::__construct($serializer);
         $this->driverRepository = $driverRepository;
-        $this->serializerInterface = $serializerInterface;
     }
 
     public function getAllDrivers(int $pageNumber = 1, int $perPage = 10, string $keyword = '') : array
     {
         $context = [
-            'groups' => ['list_driver'], // Specify groups if needed
+            'groups' => ['list_trailer'], // Specify groups if needed
         ];
 
         $drivers = $this->driverRepository->findByName($pageNumber, $perPage, $keyword);
 
-        return json_decode($this->serializerInterface->serialize($drivers, 'json', $context), true);
+        return json_decode($this->serializer->serialize($drivers, 'json', $context), true);
     }
 
     public function getTotalDrivers(string $keyword = ''): int
@@ -37,12 +36,12 @@ class DriverService implements IDriverService
     public function getDriver(int $id) : Driver
     {
         $context = [
-            'groups' => ['show_driver'], // Specify groups if needed
+            'groups' => ['show_trailer'], // Specify groups if needed
         ];
 
         $driver = $this->driverRepository->find($id);
 
-        return json_decode($this->serializerInterface->serialize($driver, 'json', $context), true);
+        return json_decode($this->serializer->serialize($driver, 'json', $context), true);
 
     }
 }
