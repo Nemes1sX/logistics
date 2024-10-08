@@ -20,7 +20,7 @@ class TrailerService extends BaseService implements ITrailerService
     public function getAllTrailers(int $pageNumber = 1, int $perPage = 10, string $name = '', string $status = '') : array
     {
         $context = [
-            'groups' => ['list_trailer'], // Specify groups if needed
+            'groups' => ['list_trailer'], 
         ];
 
         $trailers = $this->trailerRepository->findByNameOrStatus($pageNumber, $perPage, $name, $status);
