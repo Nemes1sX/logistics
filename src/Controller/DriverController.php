@@ -83,7 +83,7 @@ class DriverController extends AbstractController
     {
         $driver = $this->driverSerivce->getDriver($id);
 
-        return $this->json([$driver], 200);
+        return $this->json($driver, 200);
     }
 
 }

@@ -33,10 +33,10 @@ class TrailerService extends BaseService implements ITrailerService
         return $this->trailerRepository->totalTrailers($name, $status);
     }
 
-    public function getTrailer(int $id) : Trailer
+    public function getTrailer(int $id) : array
     {
         $context = [
-            'groups' => ['show_trailer'], // Specify groups if needed
+            'groups' => ['show_trailer'], 
         ];
 
         $trailer = $this->trailerRepository->find($id);

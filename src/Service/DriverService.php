@@ -20,7 +20,7 @@ class DriverService extends BaseService implements IDriverService
     public function getAllDrivers(int $pageNumber = 1, int $perPage = 10, string $keyword = '') : array
     {
         $context = [
-            'groups' => ['list_driver'], // Specify groups if needed
+            'groups' => ['list_driver'], 
         ];
 
         $drivers = $this->driverRepository->findByName($pageNumber, $perPage, $keyword);
@@ -36,7 +36,7 @@ class DriverService extends BaseService implements IDriverService
     public function getDriver(int $id) : Driver
     {
         $context = [
-            'groups' => ['show_driver'], // Specify groups if needed
+            'groups' => ['show_driver'],
         ];
 
         $driver = $this->driverRepository->find($id);
