@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\DTOs\OrdersDTO;
-use App\DTOs\SingleOrderDTO;
 use App\Entity\Order;
 use App\Interface\IOrderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +27,7 @@ class OrderController extends AbstractController
       description: 'Returns all drivers',
       content: new OA\JsonContent(
           type: 'array',
-          items: new OA\Items(ref: new Model(type: OrdersDTO::class, groups: ['full']))
+          items: new OA\Items(ref: new Model(type: Order::class, groups: ['list_order']))
       )
   )]
     #[OA\Parameter(
@@ -63,20 +61,16 @@ class OrderController extends AbstractController
         $name = $request->query->get('name', '');
         $status = $request->query->get('status', '');
 
-        $orders = $this->orderService->getAllOrders($pageNumber, $perPage, $status, $name);
         $totalRecords = $this->orderService->getTotalOrders();
  
         return $this->json([
-          'data' => array_map(function(Order $order) {
-            return new OrdersDTO($order);
-          }, $orders),
+          'data' => $this->orderService->getAllOrders($pageNumber, $perPage, $status, $name),
           'pageNumber' => $pageNumber,
           'totalRecords' => $totalRecords,
           'totalPages' => ceil($totalRecords / $perPage)
         ]);
     }
 
-    
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     #[OA\Response(
       response: 200,
@@ -96,6 +90,6 @@ class OrderController extends AbstractController
     {
         $order = $this->orderService->getOrder($id);
 
-        return $this->json(new SingleOrderDTO($order), 200);
+        return $this->json($order, 200);
     }
 }

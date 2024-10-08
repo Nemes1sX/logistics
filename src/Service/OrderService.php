@@ -5,19 +5,28 @@ namespace App\Service;
 use App\Entity\Order;
 use App\Interface\IOrderService;
 use App\Repository\OrderRepository;
+use Symfony\Component\Serializer\SerializerInterface;
 
-class OrderService implements IOrderService
+class OrderService extends BaseService implements IOrderService
 {
     private readonly OrderRepository $orderRepository;
 
-    public function __construct(OrderRepository $orderRepository)
+    public function __construct(SerializerInterface $serializer, OrderRepository $orderRepository)
     {
+        parent::__construct($serializer);
         $this->orderRepository = $orderRepository;
     }
 
     public function getAllOrders(int $pageNumber = 1, int $perPage = 10, string $name = '', string $status = '') : array
     {
-        return $this->orderRepository->findByStatus($pageNumber, $perPage, $name, $status);
+        $context = [
+            'groups' => ['list_order'], 
+        ];
+
+        $orders =  $this->orderRepository->findByStatus($pageNumber, $perPage, $name, $status);
+
+        return json_decode($this->serializer->serialize($orders, 'json', $context), true);
+
     }
 
     public function getTotalOrders(): int
@@ -25,8 +34,14 @@ class OrderService implements IOrderService
         return $this->orderRepository->count();
     }
 
-    public function getOrder(int $id) : Order
-    {
-        return $this->orderRepository->find($id);
+    public function getOrder(int $id) : array
+    {      
+        $context = [
+            'groups' => ['show_trailer'], 
+        ];
+
+        $order = $this->orderRepository->find($id);
+
+        return json_decode($this->serializer->serialize($order, 'json', $context), true);
     }
 }

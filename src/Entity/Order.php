@@ -7,6 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -15,24 +18,32 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['show_order', 'list_order'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['show_order', 'list_order'])]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s'])]
+    #[Groups(['show_order', 'list_order'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s'])]
+    #[Groups(['show_order', 'list_order'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
      * @var Collection<int, FleetSet>
      */
     #[ORM\ManyToMany(targetEntity: FleetSet::class, inversedBy: 'orders')]
+    #[Groups(['show_order'])]
     private Collection $fleetSet;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['show_order', 'list_order'])]
     private ?string $status = null;
 
     public function __construct()
