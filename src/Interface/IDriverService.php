@@ -8,5 +8,5 @@ interface IDriverService
 {
     function getAllDrivers(int $pageNumber = 1, int $perPage = 10, string $keyword = '') : array;
     function getDriver(int $id) : Driver;
-    function getTotalDrivers() : int;
+    function getTotalDrivers(string $keyword = '') : int;
 }
