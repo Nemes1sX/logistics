@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\DTOs\FleetSetsDTO;
-use App\DTOs\SingleFleetSetDTO;
 use App\Entity\FleetSet;
 use App\Interface\IFleetSetService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +27,7 @@ class FleetSetController extends AbstractController
         description: 'Returns all drivers',
         content: new OA\JsonContent(
             type: 'array',
-            items: new OA\Items(ref: new Model(type: FleetSetsDTO::class, groups: ['full']))
+            items: new OA\Items(ref: new Model(type: FleetSet::class, groups: ['list_fleet-set']))
         )
     )]
     #[OA\Parameter(
@@ -55,13 +53,11 @@ class FleetSetController extends AbstractController
         $perPage = $request->query->get('per_page', 10);
         $pageNumber = $request->query->get('page', 1);
         $manufacturer = $request->query->get('manufacturer', '');
-        $fleetSets =  $this->fleetSetService->getAllFleetSets($pageNumber, $perPage, $manufacturer);
+
         $totalRecords = $this->fleetSetService->getTotalFleetSets();
     
         return $this->json([
-            'data' => array_map(function(FleetSet $fleetSet) {
-                return new FleetSetsDTO($fleetSet);
-            }, $fleetSets),
+            'data' => $this->fleetSetService->getAllFleetSets($pageNumber, $perPage, $manufacturer),
             'pageNumber' => $pageNumber,
             'totalRecords' => $totalRecords,
             'totalPages' => ceil($totalRecords / $perPage)
@@ -73,7 +69,7 @@ class FleetSetController extends AbstractController
         description: 'Returns single fleet set',
         content: new OA\JsonContent(
             type: 'array',
-            items: new OA\Items(ref: new Model(type: FleetSet::class, groups: ['full']))
+            items: new OA\Items(ref: new Model(type: FleetSet::class, groups: ['show_fleet-set']))
         )
     )]
     #[OA\Parameter(
@@ -87,6 +83,6 @@ class FleetSetController extends AbstractController
     {
         $fleetSet = $this->fleetSetService->getFleetSet($id);
 
-        return $this->json(new SingleFleetSetDTO($fleetSet), 200);
+        return $this->json($fleetSet, 200);
     }
 }

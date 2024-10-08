@@ -7,8 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
-use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Serializer\Attribute\MaxDepth;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ORM\Entity(repositoryClass: FleetSetRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -17,9 +19,11 @@ class FleetSet
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['show_fleet-set', 'list_fleet-set'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['show_order', 'list_fleet-set'])]
     private ?string $name = null;
 
     /**
@@ -27,27 +31,34 @@ class FleetSet
      */
     #[MaxDepth(2)]
     #[ORM\OneToMany(targetEntity: Driver::class, mappedBy: 'fleetSet')]
+    #[Groups(['show_fleet-set', 'list_fleet-set'])]
     private Collection $drivers;
 
     #[MaxDepth(1)]
     #[ORM\OneToOne(mappedBy: 'fleet_set', cascade: ['persist', 'remove'])]
+    #[Groups(['show_fleet-set', 'list_fleet-set'])]
     private ?Trailer $trailer = null;
 
     #[MaxDepth(1)]
     #[ORM\OneToOne(mappedBy: 'fleet_set', cascade: ['persist', 'remove'])]
+    #[Groups(['show_fleet-set', 'list_fleet-set'])]
     private ?Truck $truck = null;
 
     #[ORM\Column]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s'])]
+    #[Groups(['show_fleet-set', 'list_fleet-set'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s'])]
+    #[Groups(['show_fleet-set', 'list_fleet-set'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
-     * @var Collection<int, Order>
+     * @var Collection<int, fleet-set>
      */
-    #[Ignore]
     #[ORM\ManyToMany(targetEntity: Order::class, mappedBy: 'fleetSet')]
+    #[Groups(['show_fleet-set'])]
     private Collection $orders;
 
     public function __construct()
