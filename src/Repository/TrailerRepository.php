@@ -39,5 +39,22 @@ class TrailerRepository extends ServiceEntityRepository
         ;
         }
 
+        public function totalTrailers(string $name = null, string $status = null) : int
+        {
+          $qb = $this->createQueryBuilder('t')->select('count(t.id)');
+
+            if ($name != '') { 
+                $qb->where($qb->expr()->like('t.name', ':val'))
+                ->setParameter('val', ucfirst($name).'%');
+              }
+              if ($status != '') { 
+                $qb->andWhere('val', $status)
+                ->setParameter('val', $status);
+              }
+               return $qb->getQuery()
+                ->getSingleScalarResult()
+        ;
+        }
+
 
 }

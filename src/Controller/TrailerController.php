@@ -19,7 +19,7 @@ class TrailerController extends AbstractController
  
     public function __construct(ITrailerService $trailerService)
     {
-        $this->$trailerService = $trailerService;
+        $this->trailerService = $trailerService;
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
@@ -28,7 +28,7 @@ class TrailerController extends AbstractController
         description: 'Returns all drivers',
         content: new OA\JsonContent(
             type: 'array',
-            items: new OA\Items(ref: new Model(type: TrailersDTO::class, groups: ['full']))
+            items: new OA\Items(ref: new Model(type: Trailer::class, groups: ['list_trailer']))
         )
     )]
     #[OA\Parameter(
@@ -62,14 +62,10 @@ class TrailerController extends AbstractController
         $name = $request->query->get('name', '');
         $status = $request->query->get('status', '');
         
-        $trailers = $this->trailerService->getAllTrailers($pageNumber, $perPage, $name, $status); 
-        $totalRecords = $this->trailerService->getTotalTrailers();
+        $totalRecords = $this->trailerService->getTotalTrailers($name, $status);
    
-         
         return $this->json([
-            'data' => array_map(function (Trailer $trailer) {
-                return new TrailersDTO($trailer);
-            }, $trailers),
+            'data' => $this->trailerService->getAllTrailers($pageNumber, $perPage, $name, $status),
             'pageNumber' => $pageNumber,
             'totalRecords' => $totalRecords,
             'totalPages' => ceil($totalRecords / $perPage)
@@ -82,7 +78,7 @@ class TrailerController extends AbstractController
         description: 'Returns single trailer',
         content: new OA\JsonContent(
             type: 'array',
-            items: new OA\Items(ref: new Model(type: Trailer::class, groups: ['full']))
+            items: new OA\Items(ref: new Model(type: Trailer::class, groups: ['show_trailer']))
         )
     )]
     #[OA\Parameter(

@@ -5,28 +5,42 @@ namespace App\Service;
 use App\Entity\Trailer;
 use App\Interface\ITrailerService;
 use App\Repository\TrailerRepository;
+use Symfony\Component\Serializer\SerializerInterface;
 
-class TrailerService implements ITrailerService
+class TrailerService extends BaseService implements ITrailerService
 {
     private readonly TrailerRepository $trailerRepository;
 
-    public function __construct(TrailerRepository $trailerRepository)
+    public function __construct(SerializerInterface $serializer, TrailerRepository $trailerRepository)
     {
+        parent::__construct($serializer);
         $this->trailerRepository = $trailerRepository;
     }
 
     public function getAllTrailers(int $pageNumber = 1, int $perPage = 10, string $name = '', string $status = '') : array
     {
-        return $this->trailerRepository->findByNameOrStatus($pageNumber, $perPage, $name, $status);
+        $context = [
+            'groups' => ['list_trailer'], // Specify groups if needed
+        ];
+
+        $trailers = $this->trailerRepository->findByNameOrStatus($pageNumber, $perPage, $name, $status);
+
+        return json_decode($this->serializer->serialize($trailers, 'json', $context), true);
     }
 
-    public function getTotalTrailers(): int
+    public function getTotalTrailers(string $name = '', string $status = ''): int
     {
-        return $this->trailerRepository->count();
+        return $this->trailerRepository->totalTrailers($name, $status);
     }
 
     public function getTrailer(int $id) : Trailer
     {
-        return $this->trailerRepository->find($id);
+        $context = [
+            'groups' => ['show_trailer'], // Specify groups if needed
+        ];
+
+        $trailer = $this->trailerRepository->find($id);
+
+        return json_decode($this->serializer->serialize($trailer, 'json', $context), true);
     }
 }
