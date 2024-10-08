@@ -11,34 +11,49 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TruckRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Truck::class);
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, Truck::class);
+  }
+
+  //    /**
+  //     * @return Truck[] Returns an array of Truck objects
+  //     */
+  public function findByManufacturerOrStatus(int $pageNumber = 1, int $perPage = 10,  string $manufacturer = null, string $status = null): array
+  {
+    $qb = $this->createQueryBuilder('t');
+
+    if ($manufacturer != '') {
+      $qb->where($qb->expr()->like('t.manufacturer', ':val'))
+        ->setParameter('val', $manufacturer . '%');
+    }
+    if ($status != '') {
+      $qb->andWhere('val', $status)
+        ->setParameter('val', $status);
     }
 
-    //    /**
-    //     * @return Truck[] Returns an array of Truck objects
-    //     */
-        public function findByManufacturerOrStatus(int $pageNumber = 1, int $perPage = 10,  string $manufacturer = null, string $status = null): array
-        {
-            $qb = $this->createQueryBuilder('t');
+    return  $qb->orderBy('t.id', 'ASC')
+      ->setFirstResult(($pageNumber - 1) * $perPage)
+      ->setMaxResults($perPage)
+      ->getQuery()
+      ->getResult()
+    ;
+  }
 
-                if ($manufacturer != '') { 
-                   $qb->where($qb->expr()->like('t.manufacturer', ':val'))
-                    ->setParameter('val', $manufacturer.'%');
-                  }
-                  if ($status != '') { 
-                    $qb->andWhere('val', $status)
-                    ->setParameter('val', $status);
-                  }
+  public function totalTrucks(string $manufacturer = null, string $status = null): int
+  {
+    $qb = $this->createQueryBuilder('t')->select('count(t.id)');
 
-                return  $qb->orderBy('t.id', 'ASC')
-                ->setFirstResult(($pageNumber - 1) * $perPage)
-                ->setMaxResults($perPage)
-                ->getQuery()
-                ->getResult()
-            ;
-        }
-
-
+    if ($manufacturer != '') {
+      $qb->where($qb->expr()->like('t.manufacturer', ':val'))
+        ->setParameter('val', $manufacturer . '%');
+    }
+    if ($status != '') {
+      $qb->andWhere('val', $status)
+        ->setParameter('val', $status);
+    }
+    return $qb->getQuery()
+      ->getSingleScalarResult()
+    ;
+  }
 }

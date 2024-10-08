@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\DTOs\TrucksDTO;
 use App\Entity\Truck;
 use App\Interface\ITruckService;
 use App\Service\TruckService;
@@ -29,7 +28,7 @@ class TruckController extends AbstractController
         description: 'Returns all drivers',
         content: new OA\JsonContent(
             type: 'array',
-            items: new OA\Items(ref: new Model(type: TrucksDTO::class, groups: ['full']))
+            items: new OA\Items(ref: new Model(type: Truck::class, groups: ['list_truck']))
         )
     )]
     #[OA\Parameter(
@@ -63,13 +62,10 @@ class TruckController extends AbstractController
         $manufacturer = $request->query->get('manufacturer', '');
         $status = $request->query->get('status', '');
 
-        $trucks = $this->truckService->getAllTrucks($pageNumber, $perPage, $manufacturer, $status);
         $totalRecords = $this->truckService->getTotalTrucks();
 
         return $this->json([
-            'data' => array_map(function (Truck $truck) {
-                return new TrucksDTO($truck);
-            }, $trucks),
+            'data' => $this->truckService->getAllTrucks($pageNumber, $perPage, $manufacturer, $status),
             'pageNumber' => $pageNumber,
             'totalRecords' => $totalRecords,
             'totalPages' => ceil($totalRecords / $perPage)
@@ -82,7 +78,7 @@ class TruckController extends AbstractController
         description: 'Returns single truck',
         content: new OA\JsonContent(
             type: 'array',
-            items: new OA\Items(ref: new Model(type: Truck::class, groups: ['full']))
+            items: new OA\Items(ref: new Model(type: Truck::class, groups: ['show_truck']))
         )
     )]
     #[OA\Parameter(

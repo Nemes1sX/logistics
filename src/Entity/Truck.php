@@ -5,7 +5,9 @@ namespace App\Entity;
 use App\Repository\TruckRepository;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
-use Symfony\Component\Serializer\Attribute\Ignore;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ORM\Entity(repositoryClass: TruckRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -14,29 +16,38 @@ class Truck
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['show_truck', 'list_truck'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['show_truck', 'list_truck'])]
     private ?string $manufacturer = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['show_truck', 'list_truck'])]
     private ?string $model = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['show_truck', 'list_truck'])]
     private ?string $license_plate = null;
 
     #[ORM\Column(length: 8)]
+    #[Groups(['show_truck', 'list_truck'])]
     private ?string $status = null;
 
     #[ORM\OneToOne(inversedBy: 'truck', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    #[Ignore]
+    #[Groups(['show_truck'])]
     private ?FleetSet $fleet_set = null;
 
     #[ORM\Column]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s'])]
+    #[Groups(['show_truck', 'list_truck'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s'])]
+    #[Groups(['show_truck', 'list_truck'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
