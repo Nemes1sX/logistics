@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\DTOs\DriversDTO;
 use App\Entity\Driver;
 use App\Interface\IDriverService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +27,7 @@ class DriverController extends AbstractController
         description: 'Returns all drivers',
         content: new OA\JsonContent(
             type: 'array',
-            items: new OA\Items(ref: new Model(type: DriversDTO::class, groups: ['full']))
+            items: new OA\Items(ref: new Model(type: Driver::class, groups: ['list_driver']))
         )
     )]
     #[OA\Parameter(
@@ -54,13 +53,11 @@ class DriverController extends AbstractController
         $perPage = $request->query->get('per_page', 10);
         $pageNumber = $request->query->get('page', 1);
         $keyword = $request->query->get('keyword', '');
-        $drivers = $this->driverSerivce->getAllDrivers($pageNumber, $perPage, $keyword);
-        $totalRecords = $this->driverSerivce->getTotalDrivers();
+
+        $totalRecords = $this->driverSerivce->getTotalDrivers($keyword);
 
         return $this->json([
-            'data' => array_map(function (Driver $driver) {
-                return new DriversDTO($driver);
-            }, $drivers),
+            'data' => $this->driverSerivce->getAllDrivers($pageNumber, $perPage, $keyword),
             'pageNumber' => $pageNumber,
             'totalRecords' => $totalRecords,
             'totalPages' => ceil($totalRecords / $perPage)
@@ -72,7 +69,7 @@ class DriverController extends AbstractController
         description: 'Returns single driver',
         content: new OA\JsonContent(
             type: 'array',
-            items: new OA\Items(ref: new Model(type: Driver::class, groups: ['full']))
+            items: new OA\Items(ref: new Model(type: Driver::class, groups: ['show_driver']))
         )
     )]
     #[OA\Parameter(

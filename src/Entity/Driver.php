@@ -6,6 +6,9 @@ use App\Repository\DriverRepository;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
 use Symfony\Component\Serializer\Attribute\Ignore;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ORM\Entity(repositoryClass: DriverRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -14,19 +17,25 @@ class Driver
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['show_driver', 'list_driver'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['show_driver', 'list_driver'])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'drivers')]
-    #[Ignore]
+    #[Groups(['show_driver'])]
     private ?FleetSet $fleetSet = null;
 
     #[ORM\Column]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s'])]
+    #[Groups(['show_driver', 'list_driver'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s'])]
+    #[Groups(['show_driver', 'list_driver'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
