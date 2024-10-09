@@ -38,16 +38,31 @@ class FleetSetRepository extends ServiceEntityRepository
             ;
         }
 
-        public function findOneBySomeField(int $id): ?FleetSet
+        public function findOneById(int $id): ?FleetSet
         {
             return $this->createQueryBuilder('f')
-                ->leftJoin('f.drivers', 'd')
-                ->leftJoin('f.trailer', 't')
-                ->leftJoin('f.truck', 'u')
+            ->leftJoin('f.drivers', 'drivers')->addSelect('drivers') // Eager load drivers
+            ->leftJoin('f.trailer', 'trailer')->addSelect('trailer') // Eager load trailer
+            ->leftJoin('f.truck', 'truck')->addSelect('truck')       // Eager load truck
+            ->leftJoin('f.orders', 'orders')->addSelect('orders') 
                 ->andWhere('f.id = :val')
                 ->setParameter('val', $id)
                 ->getQuery()
                 ->getOneOrNullResult()
             ;
+        }
+
+        public function totalFleetSets(string $manufacturer = null) : int
+        {
+            $qb = $this->createQueryBuilder('f')->select('count(f.id)');
+
+            if ($manufacturer != '') { 
+               $qb->where($qb->expr()->like('u.manfacturer', ':val'))
+                ->setParameter('val', $manufacturer.'%');
+              }
+
+           return $qb->getQuery()
+            ->getSingleScalarResult()
+        ;
         }
 }

@@ -23,7 +23,7 @@ class FleetSet
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['show_order', 'list_fleet-set'])]
+    #[Groups(['show_fleet-set', 'list_fleet-set'])]
     private ?string $name = null;
 
     /**

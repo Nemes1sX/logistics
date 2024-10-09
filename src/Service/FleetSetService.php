@@ -17,29 +17,43 @@ class FleetSetService extends BaseService implements IFleetSetService
         $this->fleetSetRepository = $fleetSetRepository;
     }
 
-    public function getAllFleetSets(int $pageNumber = 1, int $perPage = 10, string $name = '', string $status = '') : array
+    public function getAllFleetSets(int $pageNumber = 1, int $perPage = 10, string $manufacturer = '') : array
     {
         $context = [
             'groups' => ['list_fleet-set'], 
         ];
 
-        $fleetSets = $this->fleetSetRepository->findByManufacturer($pageNumber, $perPage, $name, $status);
+        $fleetSets = $this->fleetSetRepository->findByManufacturer($pageNumber, $perPage, $manufacturer);
 
         return json_decode($this->serializer->serialize($fleetSets, 'json', $context), true);
     }
 
-    public function getTotalFleetSets(): int
+    public function getTotalFleetSets(string $manufacturer = ''): int
     {
-        return $this->fleetSetRepository->count();
+        return $this->fleetSetRepository->totalFleetSets($manufacturer);
     }
 
     public function getFleetSet(int $id) : array
     {
         $context = [
-            'groups' => ['list_fleet-set'], 
+            'groups' => ['show_fleet-set'], 
+            'attributes' => [
+                'id', 
+                'createdAt', 
+                'updatedAt',
+                'name',
+                'drivers' => ['id', 'name', 'licenseNumber'], // Include specific driver attributes
+                'trailer' => ['name', 'status'],              // Include trailer attributes
+                'truck' => ['manufacturer', 'model'],         // Include truck attributes
+                'orders' => ['id', 'orderNumber', 'status']   // Include order attributes
+            ],
+            'circular_reference_handler' => function ($object) {
+                return $object->getId(); // Handle circular references
+            }
         ];
 
-        $fleetSet = $this->fleetSetRepository->find($id);
+        $fleetSet = $this->fleetSetRepository->findOneById($id);
+        //dd($fleetSet);
 
         return json_decode($this->serializer->serialize($fleetSet, 'json', $context), true);
     }

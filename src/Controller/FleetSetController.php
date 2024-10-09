@@ -54,7 +54,7 @@ class FleetSetController extends AbstractController
         $pageNumber = $request->query->get('page', 1);
         $manufacturer = $request->query->get('manufacturer', '');
 
-        $totalRecords = $this->fleetSetService->getTotalFleetSets();
+        $totalRecords = $this->fleetSetService->getTotalFleetSets($manufacturer);
     
         return $this->json([
             'data' => $this->fleetSetService->getAllFleetSets($pageNumber, $perPage, $manufacturer),

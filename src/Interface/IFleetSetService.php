@@ -2,11 +2,9 @@
 
 namespace App\Interface;
 
-use App\Entity\FleetSet;
-
 interface IFleetSetService
 {
-    function getAllFleetSets(int $pageNumber = 1, int $perPage = 10, string $name = '', string $status = '') : array;
-    function getFleetSet(int $id) : FleetSet;
-    function getTotalFleetSets() : int;
+    function getAllFleetSets(int $pageNumber = 1, int $perPage = 10, string $manufacturer = '') : array;
+    function getFleetSet(int $id) : array;
+    function getTotalFleetSets(string $manufacturer = '') : int;
 }
