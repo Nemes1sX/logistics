@@ -53,7 +53,6 @@ class FleetSetService extends BaseService implements IFleetSetService
         ];
 
         $fleetSet = $this->fleetSetRepository->findOneById($id);
-        //dd($fleetSet);
 
         return json_decode($this->serializer->serialize($fleetSet, 'json', $context), true);
     }
