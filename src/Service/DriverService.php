@@ -33,7 +33,7 @@ class DriverService extends BaseService implements IDriverService
         return $this->driverRepository->totalDrivers($keyword);
     }
 
-    public function getDriver(int $id) : Driver
+    public function getDriver(int $id) : array
     {
         $context = [
             'groups' => ['show_driver'],
