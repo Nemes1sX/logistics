@@ -42,7 +42,7 @@ class FleetSetService extends BaseService implements IFleetSetService
                 'createdAt', 
                 'updatedAt',
                 'name',
-                'drivers' => ['id', 'name', 'licenseNumber'], // Include specific driver attributes
+                'drivers' => ['id', 'name'], // Include specific driver attributes
                 'trailer' => ['name', 'status'],              // Include trailer attributes
                 'truck' => ['manufacturer', 'model'],         // Include truck attributes
                 'orders' => ['id', 'orderNumber', 'status']   // Include order attributes

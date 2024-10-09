@@ -40,5 +40,21 @@ class OrderRepository extends ServiceEntityRepository
             ;
        }
 
- 
+       public function totalOrders(string $status = '', string $keyword = null) : int
+       {
+        $qb = $this->createQueryBuilder('o');
+
+        if ($keyword != '') { 
+         $qb->where($qb->expr()->like('o.name', ':val'))
+          ->setParameter('val', $keyword.'%');
+        }
+        if ($status != '') { 
+            $qb 
+            ->andWhere('o.status = :val')
+            ->setParameter('val', $status);
+        }
+        return $qb->getQuery()
+            ->getSingleScalarResult()
+        ;
+       }
 }

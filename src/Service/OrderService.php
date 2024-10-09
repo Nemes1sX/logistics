@@ -29,15 +29,15 @@ class OrderService extends BaseService implements IOrderService
 
     }
 
-    public function getTotalOrders(): int
+    public function getTotalOrders(string $name = '', string $status = ''): int
     {
-        return $this->orderRepository->count();
+        return $this->orderRepository->totalOrders($name, $status);
     }
 
     public function getOrder(int $id) : array
     {      
         $context = [
-            'groups' => ['show_trailer'], 
+            'groups' => ['show_order'], 
         ];
 
         $order = $this->orderRepository->find($id);

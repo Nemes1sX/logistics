@@ -61,7 +61,7 @@ class OrderController extends AbstractController
         $name = $request->query->get('name', '');
         $status = $request->query->get('status', '');
 
-        $totalRecords = $this->orderService->getTotalOrders();
+        $totalRecords = $this->orderService->getTotalOrders($status, $name);
  
         return $this->json([
           'data' => $this->orderService->getAllOrders($pageNumber, $perPage, $status, $name),
@@ -77,7 +77,7 @@ class OrderController extends AbstractController
       description: 'Returns single order',
       content: new OA\JsonContent(
           type: 'array',
-          items: new OA\Items(ref: new Model(type: Order::class, groups: ['full']))
+          items: new OA\Items(ref: new Model(type: Order::class, groups: ['show_order']))
       )
   )]
   #[OA\Parameter(
